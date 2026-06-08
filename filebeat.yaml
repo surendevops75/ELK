@@ -1,0 +1,76 @@
+# Configuration
+
+```yaml
+daemonset:
+
+  # Additional environment variables
+  extraEnvs: []
+
+  # Additional secret mounts
+  secretMounts: []
+
+  filebeatConfig:
+
+    filebeat.yml: |
+
+      # --------------------------------------------------------
+      # INPUT CONFIGURATION
+      # --------------------------------------------------------
+
+      filebeat.inputs:
+
+        - type: filestream
+
+          # Unique input ID
+          id: k8s-containers
+
+          enabled: true
+
+          # Kubernetes container logs are symbolic links
+          prospector.scanner.symlinks: true
+
+          # Log location
+          paths:
+            - /var/log/containers/*.log
+
+          # Parse container runtime format
+          parsers:
+            - container: ~
+
+          # --------------------------------------------------------
+          # KUBERNETES METADATA
+          # --------------------------------------------------------
+
+          processors:
+
+            - add_kubernetes_metadata:
+
+                host: ${NODE_NAME}
+
+                matchers:
+
+                  - logs_path:
+
+                      logs_path: "/var/log/containers/"
+
+      # --------------------------------------------------------
+      # OUTPUT CONFIGURATION
+      # --------------------------------------------------------
+
+      output.logstash:
+
+        hosts:
+          - "34.230.25.108:5044"
+
+      # --------------------------------------------------------
+      # FILEBEAT SETTINGS
+      # --------------------------------------------------------
+
+      logging.level: info
+
+      setup.template.enabled: false
+
+      setup.ilm.enabled: false
+```
+
+---
