@@ -1,6 +1,5 @@
 # Configuration
 
-```yaml
 daemonset:
 
   # Additional environment variables
@@ -71,6 +70,3 @@ daemonset:
       setup.template.enabled: false
 
       setup.ilm.enabled: false
-```
-
----
